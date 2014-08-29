@@ -8,14 +8,14 @@ describe PuppyBreeder::PuppyList do
 	describe '#initialize' do
 		it "creates an empty hash" do
 			expect(list).to be_kind_of(PuppyBreeder::PuppyList)
-			expect(list.puppies.length).to eq(0)
+			expect(list.length).to eq(0)
 		end
 	end
 
 	describe '#add' do
 		it "adds a new puppy to the list" do
-			list.add(puppy, customer)
-			expect(list.puppies[customer.name.to_sym]).to be_kind_of(PuppyBreeder::Puppy)
+			list[customer.name.to_sym] = puppy
+			expect(list[customer.name.to_sym].first).to be_kind_of(PuppyBreeder::Puppy)
 		end
 	end
 end
