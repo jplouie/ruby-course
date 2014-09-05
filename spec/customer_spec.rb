@@ -9,12 +9,4 @@ describe PuppyBreeder::Customer do
 			expect(bob.purchase_request).to be_nil
 		end
 	end
-
-	describe '#create_purchase_request' do
-		it "should create a purchase request with the breed and color they want" do
-			bob.create_purchase_request("shiba inu", "white")
-			expect(bob.purchase_request.breed).to eq('shiba inu')
-			expect(bob.purchase_request.color).to eq('white')
-		end
-	end
 end

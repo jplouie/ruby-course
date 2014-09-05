@@ -3,15 +3,15 @@ module PuppyBreeder
 		attr_reader :name, :purchase_requests, :for_sale, :completed_purchases, :on_hold
 		def initialize(name)
 			@name = name
+			@hold_count = 0
 			@purchase_requests = PuppyBreeder::PuppyList.new
 			@for_sale = PuppyBreeder::PuppyList.new
-			@completed_purchases = PuppyBreeder::PuppyList.new
-			@on_hold = Array.new
 		end
 
-		def add_purchase_request(customer)
-			@purchase_requests[customer.name.to_sym] = customer.purchase_request
-			hold?(customer)
+		def add_purchase_request(customer, purchase_request)
+			purchase_request.customer = customer.name
+			@purchase_requests[customer.name.to_sym] = purchase_request
+			hold?(purchase_request)
 		end
 
 		def add_puppy_for_sale(puppy)
@@ -23,10 +23,11 @@ module PuppyBreeder
 			@purchase_requests
 		end
 
-		def check(customer)
+		def check(purchase_request)
 			@for_sale.each do |breeder, puppy_array|
 				puppy_array.each_index do |i|
-					if (customer.purchase_request.breed == puppy_array[i].breed) && (customer.purchase_request.color == puppy_array[i].color)
+					if (purchase_request.breed == puppy_array[i].breed) && 
+						(purchase_request.color == puppy_array[i].color)
 						return i
 					end
 				end
@@ -34,33 +35,51 @@ module PuppyBreeder
 			return nil
 		end
 
-		def make_transaction(customer)
-			i = check(customer)
+		def make_transaction(customer, purchase_request)
+			i = check(purchase_request)
 			if i >= 0
-				@completed_purchases[customer.name.to_sym] = @for_sale[@name.to_sym][i]
+				@purchase_requests[customer.name.to_sym]
+				.select { |request| request.breed == purchase_request.breed}
+				.first.status = 'pending'
+				@purchase_requests[customer.name.to_sym]
+				.select { |request| request.status == 'pending' }
+				.first.puppy = @for_sale[@name.to_sym][i]
+				@purchase_requests[customer.name.to_sym]
+				.select { |request| request.status == 'pending'}
+				.first.status = 'completed'
 				@for_sale[@name.to_sym].delete_at(i)
-				@purchase_requests.delete(customer.name.to_sym)
 			end
 			@completed_purchases
 		end
 
 		def view_completed_purchases
-			@completed_purchases
+			@purchase_requests.select { |customer, request| request.status == 'completed' }
 		end
 
-		def hold?(customer)
-			i = check(customer)
+		def hold?(purchase_request)
+			i = check(purchase_request)
 			if i == nil
-				@on_hold << customer
-				@purchase_requests.delete(customer.name.to_sym)
+				purchase_request.status = 'hold'
+				purchase_request.hold_number = @hold_count
+				@hold_count += 1
 			end
 		end
 
 		def remove_hold?(puppy)
-			@on_hold.each_index do |i|
-				if (@on_hold[i].purchase_request.breed == puppy.breed) && (@on_hold[i].purchase_request.color == puppy.color)
-					@purchase_requests[@on_hold[i].name.to_sym] = @on_hold.delete_at(i)
+			first_hold = nil
+			# @purchase_requests.select do |customer, request|
+			# 	request.select { |req| req.status == 'hold' }
+			# end
+			@purchase_requests.select { |customer, request| request.first.status == 'hold' }
+			.each do |customer_key, request|
+				if (request.first.breed == puppy.breed) && (request.first.color == puppy.color)
+					if (first_hold == nil) || (first_hold.hold_number > request.hold_number)
+						first_hold = request
+					end
 				end
+			end
+			if first_hold
+				first_hold.first.status = 'none'
 			end
 		end
 	end
