@@ -12,8 +12,8 @@ require_relative 'puppy_breeder/puppy_list.rb'
 require_relative 'puppy_breeder/purchase_request.rb'
 
 require_relative 'repos/repo_init.rb'
-# require_relative 'repos/breeds_repo.rb'
 
 PuppyBreeder.breeds_repo = PuppyBreeder::Repositories::Breeds.new
 PuppyBreeder.puppies_repo = PuppyBreeder::Repositories::Puppies.new
 PuppyBreeder.requests_repo = PuppyBreeder::Repositories::PurchaseRequests.new
+PuppyBreeder.breeds_requests_repo = PuppyBreeder::Repositories::BreedsRequests.new

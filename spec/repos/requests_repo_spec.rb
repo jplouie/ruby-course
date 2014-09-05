@@ -4,10 +4,10 @@ describe PuppyBreeder::Repositories::PurchaseRequests do
   let(:terrier) { PuppyBreeder::Breed.new(breed: 'terrier', price: 2400) }
   let(:poodle) { PuppyBreeder::Breed.new(breed: 'poodle', price: 2000) }
   let(:pitbull) { PuppyBreeder::Breed.new(breed: 'pitbull', price: 700) }
-  let(:puppy) { PuppyBreeder::Puppy.new(name: "Lucky", breed: "terrier", color: "white", age: 5) }
-  let(:puppy2) { PuppyBreeder::Puppy.new(name: "Brutus", breed: "pitbull", color: "black", age: 8) }
-  let(:request) { PuppyBreeder::PurchaseRequest.new(breed: 'terrier', color: 'white', customer: 'Bob') }
-  let(:request2) { PuppyBreeder::PurchaseRequest.new(breed: 'pitbull', color: 'black', customer: 'Natalie') }
+  let(:puppy) { PuppyBreeder::Puppy.new(name: "Lucky", breed: "terrier", age: 5) }
+  let(:puppy2) { PuppyBreeder::Puppy.new(name: "Brutus", breed: "pitbull", age: 8) }
+  let(:request) { PuppyBreeder::PurchaseRequest.new(breed: ['terrier'], customer: 'Bob') }
+  let(:request2) { PuppyBreeder::PurchaseRequest.new(breed: ['pitbull', 'poodle'], customer: 'Natalie') }
 
   before :all do
     @puppies_repo = PuppyBreeder::Repositories::Puppies.new
@@ -16,8 +16,8 @@ describe PuppyBreeder::Repositories::PurchaseRequests do
   end
 
   before do
-    drop_tables
-    create_tables
+    PuppyBreeder::Repositories.drop_tables
+    PuppyBreeder::Repositories.create_tables
   end
 
   describe 'adds and retrieves purchase requests' do
@@ -40,10 +40,10 @@ describe PuppyBreeder::Repositories::PurchaseRequests do
       @breeds_repo.add(pitbull)
       @requests_repo.add(request)
       @requests_repo.add(request2)
+      # binding.pry
       result = @requests_repo.get_requests
       expect(result.length).to eq(2)
       expect(result[0].id).to eq(1)
-      expect(result[1].breed).to eq('pitbull')
     end
   end
 
@@ -61,6 +61,8 @@ describe PuppyBreeder::Repositories::PurchaseRequests do
   describe '#update_puppy' do
     it 'adds a puppy id when the purchase request is completed' do
       @breeds_repo.add(pitbull)
+      @breeds_repo.add(poodle)
+      @breeds_repo.add(terrier)
       puppy_with_id = @puppies_repo.add(puppy2)
       request_with_id = @requests_repo.add(request2)
       request_completed = @requests_repo.update_status(request_with_id, 'completed')

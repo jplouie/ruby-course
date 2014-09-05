@@ -4,8 +4,8 @@ describe PuppyBreeder::Repositories::Puppies do
   let(:terrier) { PuppyBreeder::Breed.new(breed: 'terrier', price: 2400) }
   let(:poodle) { PuppyBreeder::Breed.new(breed: 'poodle', price: 2000) }
   let(:pitbull) { PuppyBreeder::Breed.new(breed: 'pitbull', price: 700) }
-  let(:puppy) { PuppyBreeder::Puppy.new(name: "Lucky", breed: "terrier", color: "white", age: 5) }
-  let(:puppy2) { PuppyBreeder::Puppy.new(name: "Brutus", breed: "pitbull", color: "black", age: 8) }
+  let(:puppy) { PuppyBreeder::Puppy.new(name: "Lucky", breed: "terrier", age: 5) }
+  let(:puppy2) { PuppyBreeder::Puppy.new(name: "Brutus", breed: "pitbull", age: 8) }
 
   before :all do
     @puppies_repo = PuppyBreeder::Repositories::Puppies.new
@@ -13,8 +13,8 @@ describe PuppyBreeder::Repositories::Puppies do
   end
 
   before do
-    drop_tables
-    create_tables
+    PuppyBreeder::Repositories.drop_tables
+    PuppyBreeder::Repositories.create_tables
   end
 
   describe 'adds and retrieves puppies' do

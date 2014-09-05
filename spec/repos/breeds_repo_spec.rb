@@ -8,8 +8,8 @@ describe PuppyBreeder::Repositories::Breeds do
   end
 
   before do
-    drop_tables
-    create_tables
+    PuppyBreeder::Repositories.drop_tables
+    PuppyBreeder::Repositories.create_tables
   end
 
   describe 'adds and retrieves breeds' do

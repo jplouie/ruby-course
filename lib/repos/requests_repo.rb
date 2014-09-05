@@ -7,8 +7,6 @@ module PuppyBreeder
         command = <<-SQL
         CREATE TABLE IF NOT EXISTS requests(
           id SERIAL PRIMARY KEY,
-          breed integer REFERENCES breeds(id),
-          color text,
           customer text,
           status text,
           puppy integer REFERENCES puppies(id)
@@ -25,14 +23,17 @@ module PuppyBreeder
       end
 
       def add(request)
-        breed_id = PuppyBreeder.breeds_repo.get_breed_id(request.breed)
-
         command = <<-SQL
-        INSERT INTO requests(breed, color, customer, status)
-        VALUES ('#{breed_id}', '#{request.color}', '#{request.customer}', '#{request.status}')
+        INSERT INTO requests(customer, status)
+        VALUES ('#{request.customer}', '#{request.status}')
         RETURNING *;
         SQL
         result = @db.exec(command).first
+        # result['breed'] = request.breed.map do |breed|
+        #   PuppyBreeder.breeds_repo.get_breed_id(breed)
+        # end
+        PuppyBreeder.breeds_requests_repo.add(result, request.breed)
+
         build_request(result)
       end
 
@@ -69,11 +70,12 @@ module PuppyBreeder
       end
 
       def build_request(row)
-        breed = PuppyBreeder.breeds_repo.get_breed_string(row['breed'].to_i)
+        # breeds = row['breed'].map do |id_string|
+        #   PuppyBreeder.breeds_repo.get_breed_string(id_string.to_i)
+        # end
 
         PuppyBreeder::PurchaseRequest.new(
-          breed: breed,
-          color: row['color'],
+          # breed: breeds,
           customer: row['customer'],
           status: row['status'],
           puppy: row['puppy'],

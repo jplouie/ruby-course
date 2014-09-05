@@ -9,7 +9,6 @@ module PuppyBreeder
           id SERIAL PRIMARY KEY,
           name text,
           breed integer REFERENCES breeds(id),
-          color text,
           age integer,
           status text
         );
@@ -28,8 +27,8 @@ module PuppyBreeder
         breed_id = PuppyBreeder.breeds_repo.get_breed_id(puppy.breed)
 
         command = <<-SQL
-        INSERT INTO puppies(name, breed, color, age, status)
-        VALUES ('#{puppy.name}', '#{breed_id}', '#{puppy.color}', '#{puppy.age}', 'available')
+        INSERT INTO puppies(name, breed, age, status)
+        VALUES ('#{puppy.name}', '#{breed_id}', '#{puppy.age}', 'available')
         RETURNING *;
         SQL
         result = @db.exec(command).first
@@ -69,7 +68,6 @@ module PuppyBreeder
         PuppyBreeder::Puppy.new(
           name: row['name'],
           breed: breed,
-          color: row['color'],
           age: row['age'].to_i,
           id: row['id'].to_i,
           status: row['status']
