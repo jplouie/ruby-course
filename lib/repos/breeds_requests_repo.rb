@@ -22,7 +22,6 @@ module PuppyBreeder
       end
 
       def add(row, breeds)
-        # breeds = request.breed
         request = row['id']
         breeds.map do |breed|
           id = PuppyBreeder.breeds_repo.get_breed_id(breed)
@@ -32,14 +31,13 @@ module PuppyBreeder
           SQL
           @db.exec(command)
         end
-
       end
 
       def get_breeds_ids(id)
         command = <<-SQL
         SELECT breed_id FROM breeds_requests WHERE request_id = '#{id}';
         SQL
-        @db.exec(command)
+        @db.exec(command).entries.map { |breed| breed.values.first.to_i }
       end
     end
   end

@@ -29,9 +29,6 @@ module PuppyBreeder
         RETURNING *;
         SQL
         result = @db.exec(command).first
-        # result['breed'] = request.breed.map do |breed|
-        #   PuppyBreeder.breeds_repo.get_breed_id(breed)
-        # end
         PuppyBreeder.breeds_requests_repo.add(result, request.breed)
 
         build_request(result)
@@ -70,12 +67,11 @@ module PuppyBreeder
       end
 
       def build_request(row)
-        # breeds = row['breed'].map do |id_string|
-        #   PuppyBreeder.breeds_repo.get_breed_string(id_string.to_i)
-        # end
+        breed_ids = PuppyBreeder.breeds_requests_repo.get_breeds_ids(row['id'].to_i)
+        breeds = breed_ids.map { |id| PuppyBreeder.breeds_repo.get_breed_string(id) }
 
         PuppyBreeder::PurchaseRequest.new(
-          # breed: breeds,
+          breed: breeds,
           customer: row['customer'],
           status: row['status'],
           puppy: row['puppy'],
