@@ -43,6 +43,21 @@ module Songify
         result.map { |row| build_song(row) }
       end
 
+      def get_song(song_id)
+        command = <<-SQL
+        SELECT * FROM songs WHERE id = '#{song_id}';
+        SQL
+        result = @db.exec(command).first
+        build_song(result)
+      end
+
+      def delete(song)
+        command = <<-SQL
+        DELETE FROM songs WHERE id = '#{song.id}';
+        SQL
+        @db.exec(command)
+      end
+
       def build_song(row)
         Songify::Song.new(
           name: row['name'],
