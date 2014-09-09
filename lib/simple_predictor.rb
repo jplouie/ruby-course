@@ -25,7 +25,7 @@ class SimplePredictor < Predictor
     #   }
     # }
     @data = {}
-
+    
     @all_books.each do |category, books|
       @data[category] = {
         words: 0,
@@ -36,6 +36,7 @@ class SimplePredictor < Predictor
         @data[category][:books] += 1
       end
     end
+    # binding.pry 
   end
 
   # Public: Predicts category.
