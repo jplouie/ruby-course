@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Books</title>
+</head>
+<body>
+  <ul>
+    <% @books.each do |book| %>
+      <li><%= book.name %></li>
+    <% end %>
+  </ul>
+</body>
+</html>
