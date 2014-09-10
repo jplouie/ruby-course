@@ -2,7 +2,7 @@ require_relative '../spec_helper.rb'
 
 describe Songify::Repos::Songs do
   let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs') }
-  let(:song2) { Songify::Song.new(name: 'Monkey Business', artist: 'Paramore') }
+  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore') }
   before :all do
     @songs = Songify::Repos::Songs.new
   end
@@ -40,7 +40,7 @@ describe Songify::Repos::Songs do
       expect(result).to be_an(Array)
       expect(result.length).to eq(2)
       expect(result[0].artist).to eq('The State Champs')
-      expect(result[1].name).to eq('Monkey Business')
+      expect(result[1].name).to eq('Misery Business')
     end
   end
 

@@ -1,4 +1,5 @@
 require 'pg'
+require 'pry-byebug'
 
 module Songify
   module Repos
@@ -46,6 +47,25 @@ module Songify
       def get_song(song_id)
         command = <<-SQL
         SELECT * FROM songs WHERE id = '#{song_id}';
+        SQL
+        result = @db.exec(command).first
+        build_song(result)
+      end
+
+      def get_song_id(song_name)
+        command = <<-SQL
+        SELECT * FROM songs WHERE name = '#{song_name}';
+        SQL
+        result = @db.exec(command).first
+        build_song(result)
+      end
+
+      def edit_song(song_id, new_name, new_artist)
+        command = <<-SQL
+        UPDATE songs
+        SET name = '#{new_name}', artist = '#{new_artist}'
+        WHERE id = '#{song_id}'
+        RETURNING *;
         SQL
         result = @db.exec(command).first
         build_song(result)
