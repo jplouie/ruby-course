@@ -5,13 +5,21 @@ describe Songify::Server do
     Songify::Server.new
   end
 
-  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs') }
-  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore') }
-  let(:song3) { Songify::Song.new(name: 'Ocean Avenue', artist: 'Yellowcard')}
+  let(:genre1) { Songify.genres_repo.get_genre_by_name('Rock') }
+  let(:genre2) { Songify.genres_repo.get_genre_by_name('Alternative') }
+  let(:genre3) { Songify.genres_repo.get_genre_by_name('Pop') }
+  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs', genre: genre2) }
+  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore', genre: genre2) }
+  let(:song3) { Songify::Song.new(name: 'Ocean Avenue', artist: 'Yellowcard', genre: genre1)}
 
   before do
     Songify.songs_repo.drop_table
+    Songify.genres_repo.drop_table
+    Songify.genres_repo.create_table
     Songify.songs_repo.create_table
+    Songify.genres_repo.add(Songify::Genre.new(name: 'Rock'))
+    Songify.genres_repo.add(Songify::Genre.new(name: 'Alternative'))
+    Songify.genres_repo.add(Songify::Genre.new(name: 'Pop'))
   end
 
 
@@ -47,7 +55,7 @@ describe Songify::Server do
 
   describe 'post /songs' do
     it 'creates the song from user input' do
-      post '/songs', { name: 'In the End', artist: 'Linkin Park' }
+      post '/songs', { name: 'In the End', artist: 'Linkin Park', genre: 'Rock' }
       expect(last_response).to be_redirect
     end
   end
@@ -67,6 +75,39 @@ describe Songify::Server do
       song = Songify.songs_repo.add(song2)
 
       put "/songs/#{song.id}"
+      expect(last_response).to be_redirect
+    end
+  end
+
+  describe 'get /genres' do
+    it 'displays all genres' do
+      get '/genres'
+      expect(last_response).to be_ok
+      expect(last_response.body).to include("Rock", "Alternative", "Pop")
+    end
+  end
+
+  describe 'get /genres/new' do
+    it 'shows the form to add a genre' do
+      get '/genres/new'
+      expect(last_response).to be_ok
+      expect(last_response.body).to include('name')
+    end
+  end
+
+  describe 'get /genres/:id' do
+    it 'gets the specified genre' do
+      genre = Songify.genres_repo.get_genre_by_name("Rock")
+
+      get "/genres/#{genre.id}"
+      expect(last_response).to be_ok
+      expect(last_response.body).to include('Rock')
+    end
+  end
+
+  describe 'post /genres' do
+    it 'creates a genre from user input' do
+      post '/genres', { name: 'Rap' }
       expect(last_response).to be_redirect
     end
   end

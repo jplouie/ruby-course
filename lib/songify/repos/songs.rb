@@ -13,7 +13,8 @@ module Songify
         CREATE TABLE IF NOT EXISTS songs(
           id SERIAL PRIMARY KEY,
           name TEXT,
-          artist TEXT
+          artist TEXT,
+          genre INTEGER REFERENCES genres(id)
         );
         SQL
         @db.exec(command)
@@ -21,15 +22,15 @@ module Songify
 
       def drop_table
         command = <<-SQL
-        DROP TABLE IF EXISTS songs;
+        DROP TABLE IF EXISTS songs CASCADE;
         SQL
         @db.exec(command)
       end
 
       def add(song)
         command = <<-SQL
-        INSERT INTO songs(name, artist)
-        VALUES ('#{song.name}', '#{song.artist}')
+        INSERT INTO songs(name, artist, genre)
+        VALUES ('#{song.name}', '#{song.artist}', '#{song.genre.id}')
         RETURNING *;
         SQL
         result = @db.exec(command).first
@@ -56,8 +57,7 @@ module Songify
         command = <<-SQL
         SELECT * FROM songs WHERE name = '#{song_name}';
         SQL
-        result = @db.exec(command).first
-        build_song(result)
+        @db.exec(command).first['id'].to_i
       end
 
       def edit_song(song_id, new_name, new_artist)
@@ -79,10 +79,13 @@ module Songify
       end
 
       def build_song(row)
+        genre = Songify.genres_repo.get_genre(row['genre'].to_i)
+
         Songify::Song.new(
           name: row['name'],
           artist: row['artist'],
-          id: row['id'].to_i
+          id: row['id'].to_i,
+          genre: genre
         )
       end
     end

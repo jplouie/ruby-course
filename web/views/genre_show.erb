@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Show Genre</title>
+</head>
+<body>
+  <p>Genre: <%= @genre.name %></p>
+  <p>ID: <%= @genre.id %></p>
+  <div>
+  <button type="button">
+    <a href="/songs" style="text-decoration:none;">All Songs</a>
+  </button>
+  </div>
+  <div>
+    <button type="button">
+    <a href="/genres/<%= @genre.id %>/edit" style="text-decoration:none;">Edit</a>
+  </button>
+  </div>
+</body>
+</html>

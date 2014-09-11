@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Songs</title>
+</head>
+<body>
+  <h1>All Genres</h1>
+  <ul>
+    <% @genres.each do |genres| %>
+      <li>
+        <a href="/genres/<%= genres.id %>" style="text-decoration:none"><%= genres.name %></a>
+      </li>
+    <% end %>
+  </ul>
+  <button type="button">
+    <a href="/genres/new" style="text-decoration:none;">Add a genre</a>
+  </button>
+</body>
+</html>

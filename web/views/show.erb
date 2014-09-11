@@ -6,10 +6,11 @@
 <body>
   <p>Song name: <%= @song.name %></p>
   <p>Artist: <%= @song.artist %></p>
+  <p>Genre: <%= @song.genre.name %></p>
   <p>ID: <%= @song.id %></p>
   <div>
   <button type="button">
-    <a href="/songs" style="text-decoration:none;">Back</a>
+    <a href="/songs" style="text-decoration:none;">All Songs</a>
   </button>
   </div>
   <div>

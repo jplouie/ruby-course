@@ -10,11 +10,19 @@
     <input name="name" id="song_name" type="text"><br>
     <label for="artist_name">Artist:</label>
     <input name="artist" id="artist_name" type="text"><br>
+    <label for="genre_name">Genre:</label>
+    <select name="genre" id="genre_name">
+      <% @genres.each do |genre| %>
+        <option value="<%= genre.name %>"><%= genre.name %></option>
+      <% end %>
+    </select>
 
+    <div>
     <input type="submit">
+    </div>
   </form>
   <button type="button">
-    <a href="/songs" style="text-decoration:none;">Back</a>
+    <a href="/songs" style="text-decoration:none;">All Songs</a>
   </button>
 </body>
 </html>

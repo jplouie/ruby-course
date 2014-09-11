@@ -20,7 +20,7 @@ module Songify
 
       def drop_table
         command = <<-SQL
-        DROP TABLE IF EXISTS genres;
+        DROP TABLE IF EXISTS genres CASCADE;
         SQL
         @db.exec(command)
       end
@@ -45,7 +45,22 @@ module Songify
 
       def get_genre(genre_id)
         command = <<-SQL
-        SELECT * FROM genres WHERE id = '#{genre_id}'
+        SELECT * FROM genres WHERE id = '#{genre_id}';
+        SQL
+        result = @db.exec(command).first
+        build_genre(result)
+      end
+
+      def get_genre_id(genre)
+        command = <<-SQL
+        SELECT * FROM genres WHERE name = '#{genre.name}';
+        SQL
+        @db.exec(command).first['id'].to_i
+      end
+
+      def get_genre_by_name(name)
+        command = <<-SQL
+        SELECT * FROM genres WHERE name = '#{name}';
         SQL
         result = @db.exec(command).first
         build_genre(result)
@@ -56,6 +71,17 @@ module Songify
         DELETE FROM genres WHERE id = '#{genre.id}'
         SQL
         @db.exec(command)
+      end
+
+      def edit(genre, new_genre)
+        command = <<-SQL
+        UPDATE genres
+        SET name = '#{new_genre}'
+        WHERE id = '#{genre.id}'
+        RETURNING *;
+        SQL
+        result = @db.exec(command)
+        build_genre(result)
       end
 
       def build_genre(row)

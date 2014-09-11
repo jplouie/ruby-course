@@ -1,14 +1,21 @@
 require_relative '../spec_helper.rb'
 
 describe Songify::Repos::Songs do
-  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs') }
-  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore') }
+  let(:genre1) { @genres.add(Songify::Genre.new(name: 'Rock')) }
+  let(:genre2) { @genres.add(Songify::Genre.new(name: 'Alternative')) }
+  let(:genre3) { @genres.add(Songify::Genre.new(name: 'Pop')) }
+  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs', genre: genre2) }
+  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore', genre: genre2) }
+
   before :all do
     @songs = Songify::Repos::Songs.new
+    @genres = Songify::Repos::Genres.new
   end
 
   before do
     Songify.songs_repo.drop_table
+    Songify.genres_repo.drop_table
+    Songify.genres_repo.create_table
     Songify.songs_repo.create_table
   end
 
@@ -31,6 +38,7 @@ describe Songify::Repos::Songs do
       result = @songs.get_song(1)
       expect(result).to be_a(Songify::Song)
       expect(result.name).to eq('Elevated')
+      expect(result.genre.name).to eq('Alternative')
     end
 
     it 'returns an array of all stored songs' do
