@@ -17,10 +17,12 @@ module Songify
   module Repos
     def self.create_tables
       Songify.songs_repo.create_table
+      Songify.genres_repo.create_table
     end
 
     def self.drop_tables
       Songify.songs_repo.drop_table
+      Songify.genres_repo.drop_table
     end
   end
 end
