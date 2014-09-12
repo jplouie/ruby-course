@@ -14,7 +14,8 @@ module Songify
           id SERIAL PRIMARY KEY,
           name TEXT,
           artist TEXT,
-          genre INTEGER REFERENCES genres(id)
+          genre INTEGER REFERENCES genres(id),
+          lyrics TEXT
         );
         SQL
         @db.exec(command)
@@ -28,9 +29,10 @@ module Songify
       end
 
       def add(song)
+        edited_lyrics = song.lyrics.gsub("'", "''")
         command = <<-SQL
-        INSERT INTO songs(name, artist, genre)
-        VALUES ('#{song.name}', '#{song.artist}', '#{song.genre.id}')
+        INSERT INTO songs(name, artist, genre, lyrics)
+        VALUES ('#{song.name}', '#{song.artist}', '#{song.genre.id}', '#{edited_lyrics}')
         RETURNING *;
         SQL
         result = @db.exec(command).first
@@ -60,10 +62,11 @@ module Songify
         @db.exec(command).first['id'].to_i
       end
 
-      def edit_song(song_id, new_name, new_artist)
+      def edit_song(song_id, new_name, new_artist, new_genre, new_lyrics)
+        edited_lyrics = new_lyrics[:lyrics].gsub("'", "''")
         command = <<-SQL
         UPDATE songs
-        SET name = '#{new_name}', artist = '#{new_artist}'
+        SET name = '#{new_name}', artist = '#{new_artist}', genre = '#{new_genre}', lyrics = '#{edited_lyrics}'
         WHERE id = '#{song_id}'
         RETURNING *;
         SQL
@@ -78,14 +81,24 @@ module Songify
         @db.exec(command)
       end
 
+      def search(search_lyrics)
+        command = <<-SQL
+        SELECT * FROM songs WHERE lyrics ~* '#{search_lyrics}';
+        SQL
+        result = @db.exec(command).entries
+        result.map { |row| build_song(row) }
+      end
+
       def build_song(row)
         genre = Songify.genres_repo.get_genre(row['genre'].to_i)
+        lyrics = row['lyrics'].gsub("''", "'")
 
         Songify::Song.new(
           name: row['name'],
           artist: row['artist'],
           id: row['id'].to_i,
-          genre: genre
+          genre: genre,
+          lyrics: lyrics
         )
       end
     end

@@ -8,9 +8,17 @@ describe Songify::Server do
   let(:genre1) { Songify.genres_repo.get_genre_by_name('Rock') }
   let(:genre2) { Songify.genres_repo.get_genre_by_name('Alternative') }
   let(:genre3) { Songify.genres_repo.get_genre_by_name('Pop') }
-  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs', genre: genre2) }
-  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore', genre: genre2) }
-  let(:song3) { Songify::Song.new(name: 'Ocean Avenue', artist: 'Yellowcard', genre: genre1)}
+  let(:lyrics1) { "So tell me why can't you see
+    This is where you need to be?
+    You know, it's taken its toll on me,
+    But I don't feel invisible." }
+  let(:lyrics2) { "And if you could then you know you would.
+    'Cause God it just feels so...
+    It just feels so good." }
+  let(:lyrics3) { "There's this place on Ocean Avenue" }
+  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs', genre: genre2, lyrics: lyrics1) }
+  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore', genre: genre2, lyrics: lyrics2) }
+  let(:song3) { Songify::Song.new(name: 'Ocean Avenue', artist: 'Yellowcard', genre: genre1, lyrics: lyrics3)}
 
   before do
     Songify.songs_repo.drop_table
@@ -41,7 +49,7 @@ describe Songify::Server do
 
       get "/songs/#{song.id}"
       expect(last_response).to be_ok
-      expect(last_response.body).to include('Ocean Avenue', 'Yellowcard')
+      expect(last_response.body).to include('Ocean Avenue', 'Yellowcard', 'place')
     end
   end
 
@@ -55,7 +63,7 @@ describe Songify::Server do
 
   describe 'post /songs' do
     it 'creates the song from user input' do
-      post '/songs', { name: 'In the End', artist: 'Linkin Park', genre: 'Rock' }
+      post '/songs', { name: 'In the End', artist: 'Linkin Park', genre: 'Rock', lyrics: 'In the end I got so far' }
       expect(last_response).to be_redirect
     end
   end
@@ -71,10 +79,10 @@ describe Songify::Server do
   end
 
   describe 'put /songs/:id' do
-    it 'edits the name of the song and/or artist' do
+    it 'edits the name of the song, artist, and/or genre' do
       song = Songify.songs_repo.add(song2)
 
-      put "/songs/#{song.id}"
+      put "/songs/#{song.id}", { id: song.id, name: song.name, artist: song.artist, genre: song.genre.name, lyrics: song.lyrics }
       expect(last_response).to be_redirect
     end
   end

@@ -17,6 +17,15 @@ class Songify::Server < Sinatra::Application
     erb :info
   end
 
+  get '/songs/search' do
+    erb :search
+  end
+
+  get '/songs/search/results' do
+    @songs = Songify.songs_repo.search(params[:search])
+    erb :search_results
+  end
+
   get '/songs/:id' do
     @song = Songify.songs_repo.get_song(params[:id])
     erb :show
@@ -24,17 +33,19 @@ class Songify::Server < Sinatra::Application
 
   get '/songs/:id/edit' do
     @song = Songify.songs_repo.get_song(params[:id])
+    @genres = Songify.genres_repo.get_genres
     erb :edit
   end
 
   put '/songs/:id' do
-    Songify.songs_repo.edit_song(params[:id], params[:name], params[:artist])
+    genre = Songify.genres_repo.get_genre_by_name(params[:genre])
+    Songify.songs_repo.edit_song(params[:id], params[:name], params[:artist], genre.id, lyrics: params[:lyrics])
     redirect to("/songs/#{params[:id]}")
   end
 
   post '/songs' do
-    genre = Songify::genres_repo.get_genre_by_name(params['genre'])
-    song = Songify::Song.new(name: params['name'], artist: params['artist'], genre: genre)
+    genre = Songify::genres_repo.get_genre_by_name(params[:genre])
+    song = Songify::Song.new(name: params[:name], artist: params[:artist], genre: genre, lyrics: params[:lyrics])
     song_with_id = Songify.songs_repo.add(song)
     redirect to("/songs/#{song_with_id.id}")
   end

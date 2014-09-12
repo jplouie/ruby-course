@@ -10,6 +10,22 @@
     <input name="name" id="song_name" type="text" value="<%= @song.name %>"><br>
     <label for="artist_name">Artist:</label>
     <input name="artist" id="artist_name" type="text" value="<%= @song.artist %>"><br>
+    <div>
+      <label for="lyrics_text">Lyrics</label>
+      <textarea name="lyrics" id="lyrics_text" rows="20" columns="50"><%= @song.lyrics %></textarea>
+    </div>
+    <div>
+      <label for="genre_name">Genre:</label>
+      <select name="genre" id="genre_name" value="<%= @song.genre.name %>">
+        <% @genres.each do |genre| %>
+          <% if genre.id == @song.genre.id %>
+            <option selected value="<%= genre.name %>"><%= genre.name %></option>
+          <% else %>
+            <option value="<%= genre.name %>"><%= genre.name %></option>
+          <% end %>
+        <% end %>
+      </select>
+    </div>
     <input type="hidden" name="_method" value="put">
 
     <input type="submit">

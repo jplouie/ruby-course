@@ -4,8 +4,15 @@ describe Songify::Repos::Songs do
   let(:genre1) { @genres.add(Songify::Genre.new(name: 'Rock')) }
   let(:genre2) { @genres.add(Songify::Genre.new(name: 'Alternative')) }
   let(:genre3) { @genres.add(Songify::Genre.new(name: 'Pop')) }
-  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs', genre: genre2) }
-  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore', genre: genre2) }
+  let(:lyrics1) { "So tell me why can't you see
+    This is where you need to be?
+    You know, it's taken its toll on me,
+    But I don't feel invisible." }
+  let(:lyrics2) { "And if you could then you know you would.
+    'Cause God it just feels so...
+    It just feels so good." }
+  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs', genre: genre2, lyrics: lyrics1) }
+  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore', genre: genre2, lyrics: lyrics2) }
 
   before :all do
     @songs = Songify::Repos::Songs.new
@@ -60,6 +67,16 @@ describe Songify::Repos::Songs do
       result = @songs.get_songs
       expect(result.length).to eq(1)
       expect(result[0].artist).to eq('Paramore')
+    end
+  end
+
+  describe '#search' do
+    it 'can search for songs based on lyrics' do
+      @songs.add(song1)
+      @songs.add(song2)
+      result = @songs.search('you')
+      expect(result.length).to eq(2)
+      expect(result[1]).to be_a(Songify::Song)
     end
   end
 end
