@@ -2,20 +2,25 @@
 <html>
 <head>
   <title>Songs</title>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <h1>All Songs</h1>
-  <ul>
-    <% @songs.each do |song| %>
-      <li>
-        <a href="/songs/<%= song.id %>" style="text-decoration:none;"><%= song.name %>, by <%= song.artist %></a>
-      </li>
-    <% end %>
-  </ul>
-  <div>
+  <div class="header">
+    <h1>All Songs</h1>
+  </div>
+  <div class="sidebar">
     <button type="button">
       <a href="/songs" style="text-decoration:none;">All songs</a>
     </button>
+  </div>
+  <div class="content">
+    <ul>
+      <% @songs.each do |song| %>
+        <li>
+          <a href="/songs/<%= song.id %>" style="text-decoration:none;"><%= song.name %>, by <%= song.artist %></a>
+        </li>
+      <% end %>
+    </ul>
   </div>
 </body>
 </html>

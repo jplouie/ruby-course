@@ -2,18 +2,25 @@
 <html>
 <head>
   <title>Genre Info</title>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <h1>Add a genre</h1>
-  <form action="/genres" method="post">
-    <label for="genre_name">Genre Name:</label>
-    <input name="name" id="genre_name" type="text"><br>
-    <div>
-    <input type="submit">
-    </div>
-  </form>
-  <button type="button">
-    <a href="/songs" style="text-decoration:none;">All songs</a>
-  </button>
+  <div class="header">
+    <h1>Add a genre</h1>
+  </div>
+  <div class="sidebar">
+    <button type="button">
+      <a href="/songs" style="text-decoration:none;">All songs</a>
+    </button>
+  </div>
+  <div class="content">
+    <form action="/genres" method="post">
+      <label for="genre_name">Genre Name:</label>
+      <input name="name" id="genre_name" type="text"><br>
+      <div>
+      <input type="submit">
+      </div>
+    </form>
+  </div>
 </body>
 </html>

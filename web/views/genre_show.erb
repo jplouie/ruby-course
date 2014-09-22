@@ -2,14 +2,20 @@
 <html>
 <head>
   <title>Show Genre</title>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <p>Genre: <%= @genre.name %></p>
-  <p>ID: <%= @genre.id %></p>
-  <div>
-  <button type="button">
-    <a href="/songs" style="text-decoration:none;">All Songs</a>
-  </button>
+  <div class="header">
+    <h1>Genres</h1>
+  </div>
+  <div class="sidebar">
+    <button type="button">
+      <a href="/songs" style="text-decoration:none;">All Songs</a>
+    </button>
+  </div>
+  <div class="content">
+    <p>Genre: <%= @genre.name %></p>
+    <p>ID: <%= @genre.id %></p>
   </div>
 </body>
 </html>

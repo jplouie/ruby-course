@@ -2,18 +2,25 @@
 <html>
 <head>
   <title>Songs</title>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <h1>All Genres</h1>
-  <ul>
-    <% @genres.each do |genres| %>
-      <li>
-        <a href="/genres/<%= genres.id %>" style="text-decoration:none"><%= genres.name %></a>
-      </li>
-    <% end %>
-  </ul>
-  <button type="button">
-    <a href="/genres/new" style="text-decoration:none;">Add a genre</a>
-  </button>
+  <div class="header">
+    <h1>All Genres</h1>
+  </div>
+  <div class="sidebar">
+    <button type="button">
+      <a href="/genres/new" style="text-decoration:none;">Add a genre</a>
+    </button>
+  </div>
+  <div class="content">
+    <ul>
+      <% @genres.each do |genres| %>
+        <li>
+          <a href="/genres/<%= genres.id %>" style="text-decoration:none"><%= genres.name %></a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
 </body>
 </html>

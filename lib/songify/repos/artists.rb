@@ -51,11 +51,23 @@ module Songify
         build_artist(result)
       end
 
+      def get_artist_by_name(artist_name)
+        command = <<-SQL
+        SELECT * FROM artists WHERE name = '#{artist_name}';
+        SQL
+        result = @db.exec(command).first
+        build_artist(result)
+      end
+
       def build_artist(row)
-        Songify::Artist.new(
-          name: row['name'],
-          id: row['id'].to_i
-        )
+        if row == nil
+          return nil
+        else
+          Songify::Artist.new(
+            name: row['name'],
+            id: row['id'].to_i
+          )
+        end
       end
     end
   end

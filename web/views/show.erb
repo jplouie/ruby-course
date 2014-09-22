@@ -2,22 +2,26 @@
 <html>
 <head>
   <title>Show</title>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <p>Song name: <%= @song.name %></p>
-  <p>Artist: <%= @song.artist %></p>
-  <p>Genre: <%= @song.genre.name %></p>
-  <p>Lyrics: <%= @song.lyrics %></p>
-  <p>ID: <%= @song.id %></p>
-  <div>
+  <div class="header">
+    <h1>Songs</h1>
+  </div>
+  <div class="sidebar">
     <button type="button">
     <a href="/songs/<%= @song.id %>/edit" style="text-decoration:none;">Edit</a>
-  </button>
+    </button>
+    <button type="button">
+      <a href="/songs" style="text-decoration:none;">All Songs</a>
+    </button>
   </div>
-  <div>
-  <button type="button">
-    <a href="/songs" style="text-decoration:none;">All Songs</a>
-  </button>
+  <div class="content">
+    <p>Song name: <%= @song.name %></p>
+    <p>Artist: <%= @song.artist.map { |artist| artist.name }.join(', ') %></p>
+    <p>Genre: <%= @song.genre.name %></p>
+    <p>Lyrics: <%= @song.lyrics %></p>
+    <p>ID: <%= @song.id %></p>
   </div>
 </body>
 </html>

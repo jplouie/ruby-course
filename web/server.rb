@@ -39,13 +39,32 @@ class Songify::Server < Sinatra::Application
 
   put '/songs/:id' do
     genre = Songify.genres_repo.get_genre_by_name(params[:genre])
-    Songify.songs_repo.edit_song(params[:id], params[:name], params[:artist], genre.id, lyrics: params[:lyrics])
+    artists = []
+    params[:artist].each do |artist_name|
+      artist = Songify.artists_repo.get_artist_by_name(artist_name)
+      if artist
+        artists << artist
+      else
+        artist_with_id = Songify.artists_repo.add(Songify::Artist.new(name: artist_name))
+        artists << artist_with_id
+      end
+    end
+    Songify.songs_repo.edit_song(params[:id], params[:name], artists, genre.id, lyrics: params[:lyrics])
     redirect to("/songs/#{params[:id]}")
   end
 
   post '/songs' do
-    genre = Songify::genres_repo.get_genre_by_name(params[:genre])
-    song = Songify::Song.new(name: params[:name], artist: params[:artist], genre: genre, lyrics: params[:lyrics])
+    genre = Songify.genres_repo.get_genre_by_name(params[:genre])
+    song = Songify::Song.new(name: params[:name], artist: [], genre: genre, lyrics: params[:lyrics])
+    params[:artist].each do |artist_name|
+      artist = Songify.artists_repo.get_artist_by_name(artist_name)
+      if artist
+        song.artist << artist
+      else
+        artist_with_id = Songify.artists_repo.add(Songify::Artist.new(name: artist_name))
+        song.artist << artist_with_id
+      end
+    end
     song_with_id = Songify.songs_repo.add(song)
     redirect to("/songs/#{song_with_id.id}")
   end

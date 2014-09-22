@@ -23,17 +23,27 @@ module Songify
     @artists_repo
   end
 
+  def self.artists_songs_repo=(repo)
+    @artists_songs_repo = repo
+  end
+
+  def self.artists_songs_repo
+    @artists_songs_repo
+  end
+
   module Repos
     def self.create_tables
       Songify.songs_repo.create_table
       Songify.genres_repo.create_table
       Songify.artists_repo.create_table
+      Songify.artists_songs_repo.create_table
     end
 
     def self.drop_tables
       Songify.songs_repo.drop_table
       Songify.genres_repo.drop_table
       Songify.artists_repo.drop_table
+      Songify.artists_songs_repo.drop_table
     end
   end
 end
@@ -44,7 +54,9 @@ require_relative './songify/entities/artist.rb'
 require_relative './songify/repos/songs.rb'
 require_relative './songify/repos/genres.rb'
 require_relative './songify/repos/artists.rb'
+require_relative './songify/repos/artists_songs.rb'
 
 Songify.songs_repo = Songify::Repos::Songs.new
 Songify.genres_repo = Songify::Repos::Genres.new
 Songify.artists_repo = Songify::Repos::Artists.new
+Songify.artists_songs_repo = Songify::Repos::ArtistsSongs.new

@@ -2,36 +2,117 @@
 <html>
 <head>
   <title>Info</title>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="../js/code.js"></script>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <h1>Edit song</h1>
-  <form action="/songs/<%= @song.id %>" method="post">
-    <label for="song_name">Song Name:</label>
-    <input name="name" id="song_name" type="text" value="<%= @song.name %>"><br>
-    <label for="artist_name">Artist:</label>
-    <input name="artist" id="artist_name" type="text" value="<%= @song.artist %>"><br>
-    <div>
-      <label for="lyrics_text">Lyrics</label>
-      <textarea name="lyrics" id="lyrics_text" rows="20" columns="50"><%= @song.lyrics %></textarea>
-    </div>
-    <div>
-      <label for="genre_name">Genre:</label>
-      <select name="genre" id="genre_name" value="<%= @song.genre.name %>">
-        <% @genres.each do |genre| %>
-          <% if genre.id == @song.genre.id %>
-            <option selected value="<%= genre.name %>"><%= genre.name %></option>
+  <div class="header">
+    <h1>Edit song</h1>
+  </div>
+  <div class="sidebar">
+    <button type="button">
+      <a href="/songs" style="text-decoration:none;">All Songs</a>
+    </button>
+  </div>
+  <div class="content">
+    <form action="/songs/<%= @song.id %>" method="post">
+      <div>
+        <label for="song_name">Song Name:</label>
+        <input name="name" id="song_name" type="text" value="<%= @song.name %>"><br>
+      </div>
+      <div id="add">
+        <label for="artist_name">Artist:</label>
+        <% @song.artist.each_index do |i| %>
+          <% if i == 0 %>
+            <input name="artist[]" id="artist_name" type="text" value="<%= @song.artist[i].name %>"><i id="add_icon" class="fa fa-plus"></i><br><div id="extra_artists">
           <% else %>
-            <option value="<%= genre.name %>"><%= genre.name %></option>
+            <div><i class="fa fa-times"></i><input name="artist[]" id="artist_name" type="text" value="<%= @song.artist[i].name %>"></div>
           <% end %>
         <% end %>
-      </select>
-    </div>
-    <input type="hidden" name="_method" value="put">
+        </div>
+      </div>
+      <div>
+        <label for="lyrics_text">Lyrics</label>
+        <textarea name="lyrics" id="lyrics_text" rows="20" columns="50"><%= @song.lyrics %></textarea>
+      </div>
+      <div>
+        <label for="genre_name">Genre:</label>
+        <select name="genre" id="genre_name" value="<%= @song.genre.name %>">
+          <% @genres.each do |genre| %>
+            <% if genre.id == @song.genre.id %>
+              <option selected value="<%= genre.name %>"><%= genre.name %></option>
+            <% else %>
+              <option value="<%= genre.name %>"><%= genre.name %></option>
+            <% end %>
+          <% end %>
+        </select>
+      </div>
+      <input type="hidden" name="_method" value="put">
 
-    <input type="submit">
-  </form>
-  <button type="button">
-    <a href="/songs" style="text-decoration:none;">All Songs</a>
-  </button>
+      <input type="submit">
+    </form>
+  </div>
+
+  <script>
+    $(document).ready(function(){
+      $('#add_icon').click(function(){
+        $('#extra_artists').append('<div><i class="fa fa-times"></i><input name="artist[]" id="artist_name" type="text"></div>');
+      });
+
+      $('#add').on('click', '.fa-times', function(){
+        $(this).parent().remove();
+      });
+    });
+  </script>
+
+  <style>
+    body {
+      background-color: #79E6F2;
+    }
+
+    .header {
+      background-color: #22E6A4;
+      float: left;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #1017E0;
+      font-family: sans-serif;
+    }
+
+    .sidebar {
+      float: left;
+      clear: both;
+      width: 20%;
+      height: 200px;
+      clear: both;
+      margin-top: 20px;
+    }
+
+    .content {
+      float: left;
+      width: 80%;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    button{
+      height: 40px;
+      width: 100px;
+      background-color: #F54043;
+      border-radius: 10px;
+    }
+
+    li {
+      font-family: sans-serif;
+      margin: 5px;
+    }
+</style>
 </body>
 </html>

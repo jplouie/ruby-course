@@ -4,6 +4,8 @@ describe Songify::Repos::Songs do
   let(:genre1) { @genres.add(Songify::Genre.new(name: 'Rock')) }
   let(:genre2) { @genres.add(Songify::Genre.new(name: 'Alternative')) }
   let(:genre3) { @genres.add(Songify::Genre.new(name: 'Pop')) }
+  let(:artist1) { @artists.add(Songify::Artist.new(name: 'The State Champs')) }
+  let(:artist2) { @artists.add(Songify::Artist.new(name: 'Paramore')) }
   let(:lyrics1) { "So tell me why can't you see
     This is where you need to be?
     You know, it's taken its toll on me,
@@ -11,19 +13,24 @@ describe Songify::Repos::Songs do
   let(:lyrics2) { "And if you could then you know you would.
     'Cause God it just feels so...
     It just feels so good." }
-  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs', genre: genre2, lyrics: lyrics1) }
-  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore', genre: genre2, lyrics: lyrics2) }
+  let(:song1) { Songify::Song.new(name: 'Elevated', artist: [artist1], genre: genre2, lyrics: lyrics1) }
+  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: [artist2], genre: genre2, lyrics: lyrics2) }
 
   before :all do
     @songs = Songify::Repos::Songs.new
     @genres = Songify::Repos::Genres.new
+    @artists = Songify::Repos::Artists.new
   end
 
   before do
+    Songify.artists_songs_repo.drop_table
+    Songify.artists_repo.drop_table
     Songify.songs_repo.drop_table
     Songify.genres_repo.drop_table
     Songify.genres_repo.create_table
+    Songify.artists_repo.create_table
     Songify.songs_repo.create_table
+    Songify.artists_songs_repo.create_table
   end
 
   describe 'can get and save songs' do
@@ -54,7 +61,7 @@ describe Songify::Repos::Songs do
       result = @songs.get_songs
       expect(result).to be_an(Array)
       expect(result.length).to eq(2)
-      expect(result[0].artist).to eq('The State Champs')
+      expect(result[0].artist.first.name).to eq('The State Champs')
       expect(result[1].name).to eq('Misery Business')
     end
   end
@@ -66,7 +73,7 @@ describe Songify::Repos::Songs do
       @songs.delete(song_with_id)
       result = @songs.get_songs
       expect(result.length).to eq(1)
-      expect(result[0].artist).to eq('Paramore')
+      expect(result[0].artist.first.name).to eq('Paramore')
     end
   end
 

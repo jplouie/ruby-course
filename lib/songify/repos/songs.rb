@@ -13,7 +13,6 @@ module Songify
         CREATE TABLE IF NOT EXISTS songs(
           id SERIAL PRIMARY KEY,
           name TEXT,
-          artist TEXT,
           genre INTEGER REFERENCES genres(id),
           lyrics TEXT
         );
@@ -31,11 +30,13 @@ module Songify
       def add(song)
         edited_lyrics = song.lyrics.gsub("'", "''")
         command = <<-SQL
-        INSERT INTO songs(name, artist, genre, lyrics)
-        VALUES ('#{song.name}', '#{song.artist}', '#{song.genre.id}', '#{edited_lyrics}')
+        INSERT INTO songs(name, genre, lyrics)
+        VALUES ('#{song.name}', '#{song.genre.id}', '#{edited_lyrics}')
         RETURNING *;
         SQL
         result = @db.exec(command).first
+
+        Songify.artists_songs_repo.add(result['id'].to_i, song.artist)
         build_song(result)
       end
 
@@ -66,15 +67,19 @@ module Songify
         edited_lyrics = new_lyrics[:lyrics].gsub("'", "''")
         command = <<-SQL
         UPDATE songs
-        SET name = '#{new_name}', artist = '#{new_artist}', genre = '#{new_genre}', lyrics = '#{edited_lyrics}'
+        SET name = '#{new_name}', genre = '#{new_genre}', lyrics = '#{edited_lyrics}'
         WHERE id = '#{song_id}'
         RETURNING *;
         SQL
+        Songify.artists_songs_repo.delete(song_id)
+        Songify.artists_songs_repo.add(song_id, new_artist)
+
         result = @db.exec(command).first
         build_song(result)
       end
 
       def delete(song)
+        Songify.artists_songs_repo.delete(song)
         command = <<-SQL
         DELETE FROM songs WHERE id = '#{song.id}';
         SQL
@@ -91,11 +96,12 @@ module Songify
 
       def build_song(row)
         genre = Songify.genres_repo.get_genre(row['genre'].to_i)
+        artists = Songify.artists_songs_repo.get_artists(row['id'].to_i)
         lyrics = row['lyrics'].gsub("''", "'")
 
         Songify::Song.new(
           name: row['name'],
-          artist: row['artist'],
+          artist: artists,
           id: row['id'].to_i,
           genre: genre,
           lyrics: lyrics

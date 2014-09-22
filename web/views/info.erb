@@ -5,38 +5,46 @@
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script src="../js/code.js"></script>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <h1>Add new song</h1>
-  <form action="/songs" method="post">
-    <div>
-      <label for="song_name">Song Name:</label>
-      <input name="name" id="song_name" type="text"><br>
-    </div>
-    <div>
-      <label for="artist_name">Artist:</label>
-      <input name="artist" id="artist_name" type="text">
-      <i id="add" class="fa fa-plus"></i><br>
-    </div>
-    <div>
-      <label for="lyrics_text">Lyrics</label>
-      <textarea name="lyrics" id="lyrics_text" rows="20" columns="50"></textarea>
-    </div>
-    <div>
-      <label for="genre_name">Genre:</label>
-      <select name="genre" id="genre_name">
-        <% @genres.each do |genre| %>
-          <option value="<%= genre.name %>"><%= genre.name %></option>
-        <% end %>
-      </select>
-    </div>
+  <div class="header">
+    <h1>Add new song</h1>
+  </div>
+  <div class="sidebar">
+    <button type="button">
+      <a href="/songs" style="text-decoration:none;">All Songs</a>
+    </button>
+  </div>
+  <div class="content">
+    <form action="/songs" method="post">
+      <div>
+        <label for="song_name">Song Name:</label>
+        <input name="name" id="song_name" type="text"><br>
+      </div>
+      <div id="add">
+        <label for="artist_name">Artist:</label>
+        <input name="artist[]" id="artist_name" type="text">
+        <i id="add_icon" class="fa fa-plus"></i><br>
+        <div id="extra_artists"></div>
+      </div>
+      <div>
+        <label for="lyrics_text">Lyrics</label>
+        <textarea name="lyrics" id="lyrics_text" rows="20" columns="50"></textarea>
+      </div>
+      <div>
+        <label for="genre_name">Genre:</label>
+        <select name="genre" id="genre_name">
+          <% @genres.each do |genre| %>
+            <option value="<%= genre.name %>"><%= genre.name %></option>
+          <% end %>
+        </select>
+      </div>
 
-    <div>
-      <input type="submit">
-    </div>
-  </form>
-  <button type="button">
-    <a href="/songs" style="text-decoration:none;">All Songs</a>
-  </button>
+      <div>
+        <input type="submit">
+      </div>
+    </form>
+  </div>
 </body>
 </html>

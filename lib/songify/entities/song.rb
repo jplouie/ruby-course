@@ -1,6 +1,7 @@
 module Songify
   class Song
-    attr_reader :name, :artist, :id, :genre, :lyrics
+    attr_reader :name, :id, :genre, :lyrics
+    attr_accessor :artist
 
     def initialize(params)
       @name = params[:name]

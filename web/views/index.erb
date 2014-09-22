@@ -2,33 +2,34 @@
 <html>
 <head>
   <title>Songs</title>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <h1>All Songs</h1>
-  <ul>
-    <% @songs.each do |song| %>
-      <li>
-        <a href="/songs/<%= song.id %>" style="text-decoration:none;"><%= song.name %>, by <%= song.artist %></a>
-      </li>
-    <% end %>
-  </ul>
-  <div>
+  <div class="header">
+    <h1>All Songs</h1>
+  </div>
+  <div class="sidebar">
     <button type="button">
       <a href="/songs/search" style="text-decoration:none;">Search Lyrics</a>
     </button>
-  </div>
-  <div>
     <button type="button">
       <a href="/songs/new" style="text-decoration:none;">Add a new song!</a>
     </button>
     <button type="button">
       <a href="/genres/new" style="text-decoration:none;">Add a genre!</a>
     </button>
-  </div>
-  <div>
     <button type="button">
-    <a href="/genres" style="text-decoration:none;">Available Genres</a>
-  </button>
+      <a href="/genres" style="text-decoration:none;">Available Genres</a>
+    </button>
+  </div>
+  <div class="content">
+    <ul>
+      <% @songs.each do |song| %>
+        <li>
+          <a href="/songs/<%= song.id %>" style="text-decoration:none;"><%= song.name %>, by <%= song.artist.map { |artist| artist.name }.join(', ') %></a>
+        </li>
+      <% end %>
+    </ul>
   </div>
 </body>
 </html>

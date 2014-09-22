@@ -1,0 +1,45 @@
+body {
+  background-color: #79E6F2;
+}
+
+.header {
+  background-color: #22E6A4;
+  float: left;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+
+h1 {
+  color: #1017E0;
+  font-family: sans-serif;
+}
+
+.sidebar {
+  float: left;
+  clear: both;
+  width: 15%;
+  height: 200px;
+  clear: both;
+  margin-top: 20px;
+}
+
+.content {
+  float: left;
+  width: 85%;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+button{
+  height: 40px;
+  width: 100px;
+  background-color: #F54043;
+  border-radius: 10px;
+}
+
+li, p {
+  font-family: sans-serif;
+  margin: 5px;
+}

@@ -2,17 +2,23 @@
 <html>
 <head>
   <title>Search</title>
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
-  <form action="/songs/search/results" method="get">
-    <label for="search_box">Search lyrics for phrase: </label>
-    <input name="search" id="search_box" type="text"><br>
-    <input type="submit">
-  </form>
-  <div>
+  <div class="header">
+    <h1>Search</h1>
+  </div>
+  <div class="sidebar">
     <button type="button">
       <a href="/songs" style="text-decoration:none;">All songs</a>
     </button>
+  </div>
+  <div class="content">
+    <form action="/songs/search/results" method="get">
+      <label for="search_box">Search lyrics for phrase: </label>
+      <input name="search" id="search_box" type="text"><br>
+      <input type="submit">
+    </form>
   </div>
 </body>
 </html>

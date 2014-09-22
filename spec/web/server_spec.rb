@@ -16,9 +16,12 @@ describe Songify::Server do
     'Cause God it just feels so...
     It just feels so good." }
   let(:lyrics3) { "There's this place on Ocean Avenue" }
-  let(:song1) { Songify::Song.new(name: 'Elevated', artist: 'The State Champs', genre: genre2, lyrics: lyrics1) }
-  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: 'Paramore', genre: genre2, lyrics: lyrics2) }
-  let(:song3) { Songify::Song.new(name: 'Ocean Avenue', artist: 'Yellowcard', genre: genre1, lyrics: lyrics3)}
+  let(:artist1) { Songify.artists_repo.add(Songify::Artist.new(name: 'The State Champs')) }
+  let(:artist2) { Songify.artists_repo.add(Songify::Artist.new(name: 'Paramore')) }
+  let(:artist3) { Songify.artists_repo.add(Songify::Artist.new(name: 'Yellowcard')) }
+  let(:song1) { Songify::Song.new(name: 'Elevated', artist: [artist1], genre: genre2, lyrics: lyrics1) }
+  let(:song2) { Songify::Song.new(name: 'Misery Business', artist: [artist2], genre: genre2, lyrics: lyrics2) }
+  let(:song3) { Songify::Song.new(name: 'Ocean Avenue', artist: [artist3], genre: genre1, lyrics: lyrics3)}
 
   before do
     Songify.songs_repo.drop_table
@@ -63,7 +66,8 @@ describe Songify::Server do
 
   describe 'post /songs' do
     it 'creates the song from user input' do
-      post '/songs', { name: 'In the End', artist: 'Linkin Park', genre: 'Rock', lyrics: 'In the end I got so far' }
+      # Songify.artists_repo.add(Songify::Artist.new(name: 'Linkin Park'))
+      post '/songs', { name: 'In the End', artist: ['Linkin Park'], genre: 'Rock', lyrics: 'In the end I got so far' }
       expect(last_response).to be_redirect
     end
   end
